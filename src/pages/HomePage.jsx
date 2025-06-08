@@ -9,6 +9,7 @@ const HeroSection = lazy(() => import('../components/hero/HeroSection'));
 const ServicesSection = lazy(() => import('../components/services/ServicesSection'));
 const ProjectsGallery = lazy(() => import('../components/ProjectsGallery'));
 const AboutSection = lazy(() => import('../components/about/AboutSection'));
+const PricingSection = lazy(() => import('../components/pricing/PricingSection'));
 const Testimonials = lazy(() => import('../components/testimonials/Testimonials'));
 const ContactForm = lazy(() => import('../components/contact/ContactForm'));
 const Footer = lazy(() => import('../components/footer/Footer'));
@@ -47,10 +48,15 @@ const HomePage = () => {
           <ProjectsGallery />
         </Suspense>
       </section>
-      
-      <section id="about">
+        <section id="about">
         <Suspense fallback={<LoadingSpinner className="min-h-[600px] bg-slate-50/5 backdrop-blur-sm" variant="pulse" />}>
           <AboutSection />
+        </Suspense>
+      </section>
+      
+      <section id="pricing">
+        <Suspense fallback={<LoadingSpinner className="min-h-[700px] bg-slate-50/5 backdrop-blur-sm" variant="dots" />}>
+          <PricingSection />
         </Suspense>
       </section>
       

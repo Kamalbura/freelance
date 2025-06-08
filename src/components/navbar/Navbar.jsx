@@ -7,9 +7,8 @@ import ThemeToggle from '../ui/ThemeToggle';
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-  // Track active section for navigation highlighting
-  const activeSection = useScrollSpy(['hero', 'services', 'projects', 'about', 'contact']);
+    // Track active section for navigation highlighting
+  const activeSection = useScrollSpy(['hero', 'services', 'projects', 'about', 'pricing', 'contact']);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +24,7 @@ const Navbar = () => {
     { name: 'Services', href: '#services' },
     { name: 'Projects', href: '#projects' },
     { name: 'About', href: '#about' },
+    { name: 'Pricing', href: '#pricing' },
     { name: 'Contact', href: '#contact' }
   ];
 

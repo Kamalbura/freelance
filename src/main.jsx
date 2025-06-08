@@ -5,6 +5,7 @@ import './index.css'
 import router from './router.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import { ThemeProvider } from './contexts/ThemeContext'
+import RegionalProvider from './contexts/RegionalContext'
 import { initializePerformanceMonitoring } from './utils/performance.js'
 import { ResourceHints } from './hooks/usePreloader.js'
 import PerformanceDashboard from './components/ui/PerformanceDashboard'
@@ -29,14 +30,16 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider>
-      <ErrorBoundary>
-        <AccessibilityEnhancements />
-        <ResourceHints />
-        <RouterProvider router={router} />
-        <PerformanceDashboard />
-        <CompletionStatus />
-      </ErrorBoundary>
-    </ThemeProvider>
+    <RegionalProvider>
+      <ThemeProvider>
+        <ErrorBoundary>
+          <AccessibilityEnhancements />
+          <ResourceHints />
+          <RouterProvider router={router} />
+          <PerformanceDashboard />
+          <CompletionStatus />
+        </ErrorBoundary>
+      </ThemeProvider>
+    </RegionalProvider>
   </StrictMode>,
 )

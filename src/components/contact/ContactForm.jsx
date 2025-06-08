@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { FaEnvelope, FaUser, FaBuilding, FaComment, FaRocket, FaPaperPlane } from 'react-icons/fa';
+import { FaEnvelope, FaUser, FaBuilding, FaComment, FaRocket, FaPaperPlane, FaPhone, FaGlobe } from 'react-icons/fa';
+import { useRegional } from '../../contexts/RegionalContext';
 
 const ContactForm = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, rootMargin: "-100px" });
+  const { contactInfo, region, formatPrice } = useRegional();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -30,8 +32,14 @@ const ContactForm = () => {
     'Consulting & Support',
     'Other'
   ];
-
-  const budgetRanges = [
+  const budgetRanges = region === 'IN' ? [
+    'Under ₹25,000',
+    '₹25,000 - ₹1,00,000',
+    '₹1,00,000 - ₹2,50,000',
+    '₹2,50,000 - ₹5,00,000',
+    '₹5,00,000+',
+    'Let\'s discuss'
+  ] : [
     'Under $1,000',
     '$1,000 - $5,000',
     '$5,000 - $10,000',
@@ -190,13 +198,26 @@ const ContactForm = () => {
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
             className="space-y-8"
-          >
-            <motion.div variants={itemVariants} className="bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 p-8 rounded-2xl">
+          >            <motion.div variants={itemVariants} className="bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 p-8 rounded-2xl">
               <h3 className="text-2xl font-bold text-white mb-6 font-poppins">Get In Touch</h3>
               <div className="space-y-4">
                 <div className="flex items-center text-slate-300">
                   <FaEnvelope className="text-teal-400 mr-3" />
-                  <span className="font-inter">contact@iotexpert.dev</span>
+                  <a href={`mailto:${contactInfo.email}`} className="font-inter hover:text-teal-400 transition-colors">
+                    {contactInfo.email}
+                  </a>
+                </div>
+                <div className="flex items-center text-slate-300">
+                  <FaPhone className="text-teal-400 mr-3" />
+                  <a href={`tel:${contactInfo.phone}`} className="font-inter hover:text-teal-400 transition-colors">
+                    {contactInfo.phone}
+                  </a>
+                </div>
+                <div className="flex items-center text-slate-300">
+                  <FaGlobe className="text-teal-400 mr-3" />
+                  <a href={`https://${contactInfo.website}`} target="_blank" rel="noopener noreferrer" className="font-inter hover:text-teal-400 transition-colors">
+                    {contactInfo.website}
+                  </a>
                 </div>
                 <div className="flex items-center text-slate-300">
                   <FaRocket className="text-indigo-400 mr-3" />

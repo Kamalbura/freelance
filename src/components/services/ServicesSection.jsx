@@ -2,10 +2,12 @@ import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import ServiceCard from './ServiceCard';
 import { FaMicrochip, FaWifi, FaCloud, FaShieldAlt, FaMobile, FaCogs } from 'react-icons/fa';
+import { useRegional } from '../../contexts/RegionalContext';
 
 const ServicesSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, rootMargin: "-100px" });
+  const { region, formatPrice } = useRegional();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -14,49 +16,47 @@ const ServicesSection = () => {
       transition: { staggerChildren: 0.2, delayChildren: 0.1 },
     },
   };
-
   const services = [
     {
       icon: <FaMicrochip className="text-teal-400" />,
       title: "ESP32 & NodeMCU Programming",
       description: "Custom firmware development, sensor integration, and wireless communication protocols. Full-stack IoT solutions from prototype to production.",
       features: ["Custom Firmware", "Sensor Integration", "Wireless Protocols", "OTA Updates"],
-      pricing: "Starting at $500"
+      pricing: `Starting at ${region === 'IN' ? formatPrice(35000) : formatPrice(500)}`
     },
     {
       icon: <FaCogs className="text-indigo-400" />,
       title: "Sensor & Actuator Integration", 
       description: "Seamless hardware integration with advanced sensor networks, actuator control systems, and real-time data processing.",
       features: ["Multi-Sensor Networks", "Actuator Control", "Data Processing", "Calibration"],
-      pricing: "Starting at $300"
+      pricing: `Starting at ${region === 'IN' ? formatPrice(20000) : formatPrice(300)}`
     },
     {
       icon: <FaWifi className="text-purple-400" />,
       title: "Wireless Communication",
       description: "WiFi, Bluetooth, LoRa, and cellular connectivity solutions with secure protocols and robust networking capabilities.",
       features: ["WiFi/Bluetooth", "LoRa/LoRaWAN", "Cellular IoT", "Mesh Networks"],
-      pricing: "Starting at $400"
-    },
-    {
+      pricing: `Starting at ${region === 'IN' ? formatPrice(28000) : formatPrice(400)}`
+    },    {
       icon: <FaCloud className="text-blue-400" />,
       title: "IoT Cloud Solutions",
       description: "End-to-end cloud integration with real-time dashboards, data analytics, and scalable infrastructure for your IoT devices.",
       features: ["Cloud Dashboards", "Data Analytics", "Real-time Monitoring", "API Development"],
-      pricing: "Starting at $800"
+      pricing: `Starting at ${region === 'IN' ? formatPrice(55000) : formatPrice(800)}`
     },
     {
       icon: <FaMobile className="text-green-400" />,
       title: "Mobile App Development",
       description: "Native and cross-platform mobile applications for controlling and monitoring your IoT devices with intuitive user interfaces.",
       features: ["React Native", "Flutter", "Real-time Control", "Push Notifications"],
-      pricing: "Starting at $1200"
+      pricing: `Starting at ${region === 'IN' ? formatPrice(85000) : formatPrice(1200)}`
     },
     {
       icon: <FaShieldAlt className="text-red-400" />,
       title: "Security & Consulting",
       description: "Comprehensive IoT security implementation, code reviews, and expert consulting for your embedded systems projects.",
       features: ["Security Audits", "Code Reviews", "Architecture Design", "Best Practices"],
-      pricing: "Starting at $150/hr"
+      pricing: `Starting at ${region === 'IN' ? formatPrice(1500) : formatPrice(150)}/hr`
     }
   ];
 
