@@ -1,13 +1,117 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ESP32 & IoT Development Expert | Your Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    
+    <!-- SEO Meta Tags -->
+    <title>ESP32 & IoT Development Expert | Professional Freelance Services</title>
+    <meta name="description" content="Expert ESP32 and IoT development services. Custom solutions for smart home automation, industrial IoT, and embedded systems. Professional, reliable, and innovative." />
+    <meta name="keywords" content="ESP32, IoT, embedded systems, smart home, automation, freelance developer, Arduino, microcontroller" />
+    <meta name="author" content="ESP32 IoT Developer" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="ESP32 & IoT Development Expert" />
+    <meta property="og:description" content="Professional ESP32 and IoT development services for your next project" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://your-domain.com" />
+    <meta property="og:image" content="https://your-domain.com/og-image.jpg" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ESP32 & IoT Development Expert" />
+    <meta name="twitter:description" content="Professional ESP32 and IoT development services" />
+    <meta name="twitter:image" content="https://your-domain.com/twitter-image.jpg" />
+    
+    <!-- Theme and Mobile Optimization -->
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />    <meta name="apple-mobile-web-app-title" content="IoT Expert" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+    
+    <!-- Google Fonts with display=swap for better performance -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Prevent flash of unstyled content -->
+    <style>
+      /* Critical CSS for preventing layout shift */
+      #root { 
+        min-height: 100vh; 
+        background-color: #0f172a; 
+        color: #ffffff; 
+        font-family: 'Inter', sans-serif;
+      }
+      .light #root { 
+        background-color: #ffffff; 
+        color: #0f172a; 
+      }
+      
+      /* Loading spinner */
+      .initial-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #0f172a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+      .light .initial-loader {
+        background: #ffffff;
+      }
+      
+      .loader-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #1e293b;
+        border-top: 3px solid #0ea5e9;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      .light .loader-spinner {
+        border-color: #e2e8f0;
+        border-top-color: #0ea5e9;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="initial-loader">
+        <div class="loader-spinner"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Remove initial loader once React loads -->
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const loader = document.querySelector('.initial-loader');
+          if (loader) {
+            loader.style.opacity = '0';
+            loader.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => loader.remove(), 300);
+          }
+        }, 100);
+      });
+    </script>
   </body>
 </html>

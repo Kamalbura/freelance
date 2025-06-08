@@ -1,55 +1,56 @@
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { useState, useEffect, useMemo } from 'react';
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
-  // Animation variants for staggered entrance
-  const containerVariants = {
+  // Memoize animation variants for performance
+  const containerVariants = useMemo(() => ({
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.3,
-        delayChildren: 0.2
+        staggerChildren: shouldReduceMotion ? 0.1 : 0.3,
+        delayChildren: shouldReduceMotion ? 0.1 : 0.2
       }
     }
-  };
+  }), [shouldReduceMotion]);
 
-  const itemVariants = {
+  const itemVariants = useMemo(() => ({
     hidden: { 
       opacity: 0, 
-      y: 30 
+      y: shouldReduceMotion ? 10 : 30 
     },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.8,
+        duration: shouldReduceMotion ? 0.3 : 0.8,
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
-  };
+  }), [shouldReduceMotion]);
 
-  const buttonVariants = {
+  const buttonVariants = useMemo(() => ({
     hidden: { 
       opacity: 0, 
-      scale: 0.8 
+      scale: shouldReduceMotion ? 0.95 : 0.8 
     },
     visible: {
       opacity: 1,
       scale: 1,
       transition: {
-        duration: 0.6,
+        duration: shouldReduceMotion ? 0.3 : 0.6,
         ease: "easeOut"
       }
     },
     hover: {
-      scale: 1.05,
+      scale: shouldReduceMotion ? 1.02 : 1.05,
       transition: {
         duration: 0.2,
         ease: "easeInOut"
@@ -58,7 +59,7 @@ const HeroSection = () => {
     tap: {
       scale: 0.95
     }
-  };
+  }), [shouldReduceMotion]);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">

@@ -1,10 +1,10 @@
 import React from 'react';
-import AboutMeSection from '../components/AboutMeSection';
+import AboutSection from '../../components/about/AboutSection';
 
 const SimpleAboutPage = () => {
   return (
     <div className="min-h-screen pt-20">
-      <AboutMeSection />
+      <AboutSection />
     </div>
   );
 };

@@ -1,7 +1,10 @@
 // ProjectsGallery.jsx - Premium ESP32 & IoT Projects Showcase
 // Grid layout with scroll animations and hover effects
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import OptimizedImage from './ui/OptimizedImage';
+import { useTouchGestures, useIsMobile } from '../hooks/useTouchGestures';
+import { fadeInUp, staggerContainer, cardHover, defaultViewport } from '../utils/animations';
 
 // Sample project data - replace with your actual projects
 const projects = [
@@ -117,7 +120,7 @@ const statusColors = {
   "Planning": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
 };
 
-// Animation variants
+// Animation variants with reduced motion support
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -142,17 +145,7 @@ const itemVariants = {
     transition: {
       duration: 0.6,
       ease: [0.22, 1, 0.36, 1]
-    }
-  }
-};
-
-const cardHover = {
-  y: -8,
-  scale: 1.02,
-  transition: {
-    duration: 0.3,
-    ease: "easeOut"
-  }
+    }  }
 };
 
 const ProjectsGallery = () => {
@@ -161,19 +154,84 @@ const ProjectsGallery = () => {
   const [viewMode, setViewMode] = useState("grid"); // grid or list
   const [sortBy, setSortBy] = useState("featured"); // featured, recent, category
   const [showFilters, setShowFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
   const gridRef = useRef(null);
+  const shouldReduceMotion = useReducedMotion();
+  const isMobile = useIsMobile();
+  
+  // Touch gestures for mobile navigation
+  const touchRef = useTouchGestures({
+    onSwipeLeft: () => {
+      if (isMobile && currentPage < Math.ceil(filteredProjects.length / (isMobile ? 1 : 6)) - 1) {
+        setCurrentPage(prev => prev + 1);
+      }
+    },
+    onSwipeRight: () => {
+      if (isMobile && currentPage > 0) {
+        setCurrentPage(prev => prev - 1);
+      }
+    },
+    threshold: 50
+  });
+  // Memoize filtered and sorted projects for performance
+  const filteredProjects = useMemo(() => {
+    let filtered = activeCategory === "All" 
+      ? projects 
+      : projects.filter(project => project.category === activeCategory);
 
-  // Filter and sort projects
-  let filteredProjects = activeCategory === "All" 
-    ? projects 
-    : projects.filter(project => project.category === activeCategory);
+    // Sort projects
+    if (sortBy === "featured") {
+      filtered = [...filtered].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+    } else if (sortBy === "recent") {
+      filtered = [...filtered].sort((a, b) => b.id - a.id);
+    }
 
-  // Sort projects
-  if (sortBy === "featured") {
-    filteredProjects = [...filteredProjects].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-  } else if (sortBy === "recent") {
-    filteredProjects = [...filteredProjects].sort((a, b) => b.id - a.id);
-  }
+    return filtered;
+  }, [activeCategory, sortBy]);
+
+  // Memoize categories for performance
+  const categories = useMemo(() => 
+    ["All", ...new Set(projects.map(project => project.category))], 
+    []
+  );
+
+  // Memoize animation variants based on motion preference
+  const adaptiveVariants = useMemo(() => ({
+    container: {
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: {
+          staggerChildren: shouldReduceMotion ? 0.05 : 0.1,
+          delayChildren: shouldReduceMotion ? 0.1 : 0.2
+        }
+      }
+    },
+    item: {
+      hidden: { 
+        opacity: 0, 
+        y: shouldReduceMotion ? 20 : 60,
+        scale: shouldReduceMotion ? 0.98 : 0.95
+      },
+      visible: {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: {
+          duration: shouldReduceMotion ? 0.3 : 0.6,
+          ease: [0.22, 1, 0.36, 1]
+        }
+      }
+    },
+    cardHover: shouldReduceMotion ? {} : {
+      y: -8,
+      scale: 1.02,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    }
+  }), [shouldReduceMotion]);
 
   // Smooth scroll to grid when category changes
   useEffect(() => {
@@ -299,24 +357,26 @@ const ProjectsGallery = () => {
           </div>
         </motion.div>        {/* Projects grid with AnimatePresence for smooth transitions */}
         <motion.div 
-          ref={gridRef}
+          ref={touchRef}
           className={`${
             viewMode === "grid" 
-              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" 
+              ? `grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'} gap-8` 
               : "flex flex-col gap-6"
-          }`}
+          } ${isMobile ? 'touch-pan-x' : ''}`}
           layout
         >
           <AnimatePresence mode="wait">
-            {filteredProjects.map((project) => (
-              <motion.div
+            {(isMobile 
+              ? filteredProjects.slice(currentPage, currentPage + 1)
+              : filteredProjects
+            ).map((project) => (<motion.div
                 key={`${activeCategory}-${project.id}`}
                 layout
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                initial={{ opacity: 0, scale: shouldReduceMotion ? 0.98 : 0.9, y: shouldReduceMotion ? 10 : 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={cardHover}
+                exit={{ opacity: 0, scale: shouldReduceMotion ? 0.98 : 0.9, y: shouldReduceMotion ? -10 : -20 }}
+                transition={{ duration: shouldReduceMotion ? 0.3 : 0.5, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={adaptiveVariants.cardHover}
                 className={`group relative bg-slate-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-slate-700/50 hover:border-primary-500/50 transition-all duration-500 ${
                   viewMode === "list" ? "flex flex-row" : ""
                 }`}
@@ -343,15 +403,12 @@ const ProjectsGallery = () => {
                   transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
                 >
                   {project.status}
-                </motion.div>
-
-                {/* Project image */}
+                </motion.div>                {/* Project image with optimized loading */}
                 <div className={`relative overflow-hidden ${viewMode === "list" ? "w-80 flex-shrink-0" : ""}`}>
-                  <img
+                  <OptimizedImage
                     src={project.image}
                     alt={project.title}
                     className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
-                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
                   
@@ -464,7 +521,53 @@ const ProjectsGallery = () => {
               </motion.div>
             ))}
           </AnimatePresence>
-        </motion.div>        {/* Enhanced stats and CTA section */}
+        </motion.div>
+
+        {/* Mobile pagination controls */}
+        {isMobile && filteredProjects.length > 1 && (
+          <motion.div 
+            className="flex items-center justify-between mt-8 px-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+              disabled={currentPage === 0}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 active:scale-95"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Previous
+            </button>
+            
+            <div className="flex items-center gap-2">
+              {Array.from({ length: filteredProjects.length }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i)}
+                  className={`w-3 h-3 rounded-full transition-all duration-200 active:scale-75 ${
+                    i === currentPage ? 'bg-primary-500 scale-125' : 'bg-slate-600'
+                  }`}
+                />
+              ))}
+            </div>
+            
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(filteredProjects.length - 1, prev + 1))}
+              disabled={currentPage === filteredProjects.length - 1}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 active:scale-95"
+            >
+              Next
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </motion.div>
+        )}
+
+        {/* Enhanced stats and CTA section */}
         <motion.div 
           className="mt-20 text-center"
           initial={{ opacity: 0, y: 30 }}

@@ -1,19 +1,16 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
-import SimpleHeader from '../SimpleHeader';
-import Footer from '../Footer';
 import ErrorBoundary from '../ErrorBoundary';
+import { PageLoader } from '../ui/LoadingSpinner';
 
 const MainLayout = () => {
   return (
-    <div className="min-h-screen bg-white">
-      <SimpleHeader />
-      <main>
-        <ErrorBoundary>
+    <div className="min-h-screen">
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
           <Outlet />
-        </ErrorBoundary>
-      </main>
-      <Footer />
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 };
