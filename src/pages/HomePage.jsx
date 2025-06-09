@@ -5,12 +5,12 @@ import ScrollToTop from '../components/ui/ScrollToTop';
 import SimpleBackground from '../components/ui/SimpleBackground';
 
 // Lazy load heavy components for better performance
-const HeroSection = lazy(() => import('../components/hero/HeroSection'));
-const ServicesSection = lazy(() => import('../components/services/ServicesSection'));
-const ProjectsGallery = lazy(() => import('../components/ProjectsGallery'));
+const HeroSection = lazy(() => import('../components/hero/EnhancedHeroSection'));
+const ServicesSection = lazy(() => import('../components/services/AnimatedServicesSection'));
+const ProjectsGallery = lazy(() => import('../components/projects/AnimatedProjectsGallery'));
 const AboutSection = lazy(() => import('../components/about/AboutSection'));
 const PricingSection = lazy(() => import('../components/pricing/PricingSection'));
-const Testimonials = lazy(() => import('../components/testimonials/Testimonials'));
+const Testimonials = lazy(() => import('../components/testimonials/AnimatedTestimonials'));
 const ContactForm = lazy(() => import('../components/contact/ContactForm'));
 const Footer = lazy(() => import('../components/footer/Footer'));
 

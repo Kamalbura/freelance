@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { useScrollSpy } from '../../hooks/useIntersectionObserver';
 import ThemeToggle from '../ui/ThemeToggle';
+import { MorphingLogo, MagneticElement } from '../ui/AnimeInspiredAnimations';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -47,44 +48,42 @@ const Navbar = () => {
             ? 'bg-slate-900/95 backdrop-blur-md shadow-lg border-b border-slate-800'
             : 'bg-transparent'
         }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            {/* Logo */}
-            <motion.div
-              className="flex items-center cursor-pointer"
-              onClick={() => scrollToSection('#hero')}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span className="text-2xl font-bold">
-                <span className="text-teal-500">IoT</span>
-                <span className="text-white">Dev</span>
-              </span>
-            </motion.div>            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              {navLinks.map((link, index) => {
+      >        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4 md:py-6">{/* Logo */}
+            <MagneticElement strength={0.2}>
+              <motion.div
+                className="flex items-center cursor-pointer"
+                onClick={() => scrollToSection('#hero')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <MorphingLogo className="text-2xl" />
+              </motion.div>
+            </MagneticElement>{/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">              {navLinks.map((link, index) => {
                 const isActive = activeSection === link.href.substring(1); // Remove # from href
                 return (
-                  <motion.button
-                    key={link.name}
-                    onClick={() => scrollToSection(link.href)}
-                    className={`font-medium transition-all duration-200 relative group ${
-                      isActive 
-                        ? 'text-teal-400' 
-                        : 'text-slate-300 hover:text-teal-400'
-                    }`}
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ y: -2 }}
-                  >
-                    {link.name}
-                    <span className={`absolute -bottom-1 left-0 h-0.5 bg-teal-400 transition-all duration-300 ${
-                      isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`}></span>
-                  </motion.button>
-                );              })}
+                  <MagneticElement key={link.name} strength={0.1}>
+                    <motion.button
+                      onClick={() => scrollToSection(link.href)}
+                      className={`font-medium transition-all duration-200 relative group ${
+                        isActive 
+                          ? 'text-teal-400' 
+                          : 'text-slate-300 hover:text-teal-400'
+                      }`}
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ y: -2 }}
+                    >
+                      {link.name}
+                      <span className={`absolute -bottom-1 left-0 h-0.5 bg-teal-400 transition-all duration-300 ${
+                        isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                      }`}></span>
+                    </motion.button>
+                  </MagneticElement>
+                );
+              })}
               
               {/* Theme toggle */}
               <ThemeToggle className="ml-4" size="md" />
